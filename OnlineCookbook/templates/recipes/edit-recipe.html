@@ -1,0 +1,27 @@
+{% extends 'shared/base.html' %}
+
+{% block content %}
+    <body class="text-center">
+
+    <main class="form-text">
+        <h1 class="h3 mb-3 fw-normal">Edit your recipe</h1>
+        <form
+                class="form-control me-2"
+                method="post"
+                action="{% url 'edit recipe' recipe.id %}"
+                enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <p>
+                <h5>{{ field.name }}</h5>
+                <a>{{ field }}</a>
+            {% endfor %}
+            <br>
+            <br>
+            <button class="button btn-primary" type="submit">Update</button>
+            <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+        </form>
+    </main>
+
+    </body>
+{% endblock %}

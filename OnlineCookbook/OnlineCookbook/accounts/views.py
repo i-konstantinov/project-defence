@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from OnlineCookbook.accounts.forms import LoginForm, RegisterForm, ProfileForm
 from OnlineCookbook.accounts.models import Profile
-# from OnlineCookbook.common.models import Like
+from OnlineCookbook.common.models import Like
 from OnlineCookbook.recipes.models import Recipe
 
 
@@ -64,13 +64,13 @@ def view_profile(request, pk):
 
     recipes_added_by_user = Recipe.objects.filter(user_id=profile.user.id)
 
-    # recipes_liked_by_user = [obj.recipe for obj in Like.objects.filter(user_id=profile.user.id)]
+    recipes_liked_by_user = [obj.recipe for obj in Like.objects.filter(user_id=profile.user.id)]
 
     context = {
         'profile': profile,
         'profile_owner': profile_owner,
         'recipes_added_by_user': recipes_added_by_user,
-        # 'recipes_liked_by_user': recipes_liked_by_user,
+        'recipes_liked_by_user': recipes_liked_by_user,
     }
     return render(request, 'accounts/view-profile.html', context)
 

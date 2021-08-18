@@ -1,0 +1,115 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="row py-5 px-4">
+        <div class="col-md-5 mx-auto">
+
+            <!-- Recipe widget -->
+            <div class="bg-white shadow rounded overflow-hidden">
+                <div class="px-4 pt-4 pb-4 cover">
+                    {#                    <div class="media align-items-end profile-head">#}
+                    <div class="profile mr-3">
+                        <div class="card-img-top">
+                            {% if recipe.image %}
+                                <img src="{{ recipe.image.url }}" width="200" height="200">
+                            {% else %}
+                                <img src="{% static 'images/generic_recipe.jpg' %}" width="200" height="200">
+                            {% endif %}
+                        </div>
+
+                        <div class="flex-md-column">
+                            <div class="media-body mb-5 text-black">
+                                <br>
+                                <p>
+                                <h4>{{ recipe.title }}</h4>
+                                <h6>Type: {{ recipe.type }}</h6>
+                                <h6>Added by: {{ recipe.user.email }}</h6>
+{#                                <h6>Liked by {{ likes_count }} people</h6>#}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Options available only for recipe owner -->
+                    {% if recipe_owner %}
+                        <p>
+                            <a href="{% url 'edit recipe' recipe.id %}"
+                               class="btn btn-outline-dark btn-sm btn-block">Edit recipe</a>
+                            <a href="{% url 'delete recipe' recipe.id %}"
+                               class="btn btn-outline-danger btn-sm btn-block"
+                            >Delete recipe</a>
+                        </p>
+                    {% endif %}
+
+
+                    <!-- This option is available for all users -->
+                    <!-- Redirects to owner's profile -->
+                    <p>
+                        <a href="{% url 'view profile' recipe.user.id %}"
+                           class="btn btn-outline-dark btn-sm btn-block">Go to user's profile</a>
+                    </p>
+                </div>
+
+                <!-- Recipe Info -->
+                <div class="bg-light p-4 d-flex justify-content-end text-center">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item">
+                            <div class="box">
+                                <p>
+                                <h3><b>Ingredients:</b></h3>
+                                {% for i in recipe_ingredients %}
+                                    <h5>{{ i }}</h5>
+                                {% endfor %}
+                                <p>
+                                <h3><b>Instructions:</b></h3>
+                                <h5>{{ recipe.instructions }}</h5>
+                            </div>
+                        </li>
+                        <hr>
+
+
+                        <!-- Only not-owners can like -->
+                        {% if not recipe_owner %}
+                            {% if is_liked %}
+                                <b>Unlike</b>
+                                <a href="{% url 'like recipe' recipe.id %}">
+                                    <span style='font-size:50px;'>&#128078;</span>
+                                </a>
+                            {% else %}
+                                <b>Like this recipe</b>
+                                <a href="{% url 'like recipe' recipe.id %}">
+                                    <span style='font-size:50px;'>&#128077;</span>
+                                </a>
+                            {% endif %}
+                            <hr>
+                        {% endif %}
+
+
+                        <!-- Comments section -->
+                        <h4><b><i>Comments:</i></b></h4>
+                        {% for comment in comments %}
+                            <div class="box">
+                                <h5><small><u>{{ comment.user.email }}:</u></small></h5>
+                                <blockquote><i>"{{ comment.text }}"</i></blockquote>
+                                <br>
+                            </div>
+                        {% endfor %}
+
+                        <div class="box">
+                            <form method="post" action="{% url 'comment recipe' recipe.id %}">
+                                {% csrf_token %}
+                                {{ comment_form }}
+                                <button class="btn btn-primary mt-2" type="submit">Add comment</button>
+                            </form>
+                        </div>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

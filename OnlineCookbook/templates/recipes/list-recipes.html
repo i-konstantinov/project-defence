@@ -1,0 +1,80 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+{% block content %}
+    <main>
+        <div class="album py-5 bg-light">
+            <div class="container">
+
+                {% if form %}
+                    <p>Currently we have {{ total_recipes_count }} recipes in our database!</p>
+                    <p>Type in a recipe title or an ingredient to search for: </p>
+                    <form class="d-flex" method="post" action="{% url 'search recipes' %}">
+                        {% csrf_token %}
+                        {{ form.text }}
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <hr>
+                {% endif %}
+
+
+                {% if recipes %}
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        {% for recipe in recipes %}
+                            <div class="col">
+                                <div class="card shadow-sm">
+                                    <a href="{% url 'view recipe' recipe.id %}">
+                                        {% if recipe.image %}
+                                            <img
+                                                    src="{{ recipe.image.url }}"
+                                                    width="200"
+                                                    height="200"
+                                            >
+                                        {% else %}
+                                            <img
+                                                    src="{% static 'images/generic_recipe.jpg' %}"
+                                                    width="200"
+                                                    height="200"
+                                            >
+                                        {% endif %}
+                                    </a>
+
+                                    <div class="card-body">
+                                        <p class="card-text">Title: {{ recipe.title }}</p>
+                                        <p
+                                                class="card-text"
+                                                size="1"
+                                        >Type: {{ recipe.type }}</p>
+                                        <p
+                                                class="card-text"
+                                                size="1"
+                                        >Added by: {{ recipe.user }}</p>
+                                        <a href="{% url 'view recipe' recipe.id %}">
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-primary"
+                                            >Show details
+                                            </button>
+                                        </a>
+
+                                        <a href="{% url 'view profile' recipe.user.id %}">
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                            >View user's profile and recipes
+                                            </button>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <h2>No recipes to show...</h2>
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="row py-5 px-4">
+        <div class="col-md-5 mx-auto">
+
+            <!-- Recipe widget -->
+            <div class="bg-white shadow rounded overflow-hidden">
+                <div class="px-4 pt-4 pb-4 cover">
+                    <div class="profile mr-3">
+                        <div class="card-img-top">
+                            {% if profile.profile_image %}
+                                <img src="{{ profile.profile_image.url }}" alt="" width="200" height="200">
+                            {% else %}
+                                <img src="{% static 'images/generic_user.jpg' %}" alt="" width="200" height="200">
+                            {% endif %}
+                        </div>
+
+
+                        <!-- User info -->
+                        <div class="flex-md-column">
+                            <h2 class="mt-0 mb-0">User: {{ profile.user.email }}</h2>
+                            <h4 class="mt-0 mb-0">Full
+                                name: {{ profile.first_name }} {{ profile.last_name }}</h4>
+                            <p class="fas fa-map-marker-alt mr-1">From: {{ profile.hometown }}</p>
+                        </div>
+
+
+                        <!-- Check if current user is profile's user and add options -->
+                        {% if profile_owner %}
+                            <a href="{% url 'edit profile' profile.user_id %}"
+                               class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
+                        {% endif %}
+
+
+                        <!-- Recipes added by user -->
+                        <div class="py-4 px-4">
+                            <h5><u>User's recipes:</u></h5>
+
+                            {% if recipes_added_by_user %}
+
+                                {% for recipe in recipes_added_by_user %}
+                                    <div class="col-lg-6 flex-column">
+
+                                        <a href="{% url 'view recipe' recipe.id %}">
+                                            {% if recipe.image %}
+                                                <img
+                                                        src="{{ recipe.image.url }}"
+                                                        width="100"
+                                                        height="100"
+                                                        alt=""
+                                                        class="img-fluid rounded shadow-sm">
+                                            {% else %}
+                                                <img
+                                                        src="{% static 'images/generic_recipe.jpg' %}"
+                                                        width="100"
+                                                        height="100"
+                                                        alt=""
+                                                        class="img-fluid rounded shadow-sm">
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <a><p>{{ recipe.title }}</p></a>
+                                {% endfor %}
+                                </div>
+
+                            {% else %}
+                                <h6>No recipes added by user</h6>
+                            {% endif %}
+                    </div>
+
+
+                    <!-- Recipes liked by user -->
+                    <div class="py-4 px-4">
+                        <h5><u>Recipes liked by user:</u></h5>
+                        {% if recipes_liked_by_user %}
+
+                            {% for recipe in recipes_liked_by_user %}
+                                <div class="col-lg-6 flex-column">
+
+                                    <a href="{% url 'view recipe' recipe.id %}">
+                                        {% if recipe.image %}
+                                            <img
+                                                    src="{{ recipe.image.url }}"
+                                                    width="100"
+                                                    height="100"
+                                                    alt=""
+                                                    class="img-fluid rounded shadow-sm">
+                                        {% else %}
+                                            <img
+                                                    src="{% static 'images/generic_recipe.jpg' %}"
+                                                    width="100"
+                                                    height="100"
+                                                    alt=""
+                                                    class="img-fluid rounded shadow-sm">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <a><p>{{ recipe.title }}</p></a>
+                            {% endfor %}
+                            </div>
+
+                        {% else %}
+                            <h6>No recipes liked by user</h6>
+                        {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

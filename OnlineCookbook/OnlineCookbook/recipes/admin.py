@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from OnlineCookbook.recipes.models import Recipe
+
+
+@admin.register(Recipe)
+class OnlineCookbookRecipeAdmin(admin.ModelAdmin):
+    pass

@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from OnlineCookbook.common.models import Comment
+
+
+@admin.register(Comment)
+class OnlineCookbookCommentAdmin(admin.ModelAdmin):
+    pass

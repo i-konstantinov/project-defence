@@ -1,0 +1,22 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+{% block content %}
+    <body class="text-center">
+
+    <main class="form-signin">
+        <h1 class="h3 mb-3 fw-normal"></h1>
+        <h1 class="h3 mb-3 fw-normal">Create a profile</h1>
+        <form class="form-control me-2" method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            {{ form }}
+            <br>
+            <button class="button btn-primary" type="submit">Register</button>
+            <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+        </form>
+    </main>
+
+
+    </body>
+{% endblock %}
+
