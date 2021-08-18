@@ -1,4 +1,4 @@
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -123,4 +123,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.OnlineCookbookUser'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media_files'
+MEDIA_ROOT = os.path.join(BASE_DIR / 'media_files')
