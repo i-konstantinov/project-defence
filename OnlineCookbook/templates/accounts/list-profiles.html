@@ -16,7 +16,7 @@
                                 <div class="card shadow-sm">
 
 
-                                    <a href="{% url 'view profile' profile.user.id %}">
+                                    <a href="{% url 'view profile' profile.pk %}">
                                         {% if profile.profile_image %}
                                             <img
                                                     src="{{ profile.profile_image.url }}"

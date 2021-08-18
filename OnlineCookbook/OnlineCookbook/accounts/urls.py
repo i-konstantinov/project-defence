@@ -4,10 +4,10 @@ from OnlineCookbook.accounts import views
 
 
 urlpatterns = [
-    path('', views.list_profiles, name='list profiles'),
+    path('', views.ListProfilesView.as_view(), name='list profiles'),
+    path('register/', views.RegisterView.as_view(), name='register'),
     path('login/', views.log_in, name='log in'),
-    path('register/', views.register, name='register'),
     path('logout/', views.log_out, name='log out'),
-    path('view/<int:pk>', views.view_profile, name='view profile'),
-    path('edit/<int:pk>', views.edit_profile, name='edit profile'),
+    path('details/<int:pk>', views.ProfileDetailsView.as_view(), name='view profile'),
+    path('edit/<int:pk>', views.ProfileEditView.as_view(), name='edit profile'),
 ]

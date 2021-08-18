@@ -29,7 +29,7 @@
 
                         <!-- Check if current user is profile's user and add options -->
                         {% if profile_owner %}
-                            <a href="{% url 'edit profile' profile.user_id %}"
+                            <a href="{% url 'edit profile' profile.pk %}"
                                class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
                         {% endif %}
 

@@ -10,8 +10,9 @@ def index(request):
 
 
 # Filter by type available only on index page
-def index_filter(request, dish_type):
+def recipe_type_filter(request, dish_type):
     recipes = Recipe.objects.filter(type=dish_type)
+
     context = {
         'recipes': recipes,
     }
