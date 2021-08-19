@@ -1,13 +1,13 @@
 
-from django.contrib.auth import login, logout, get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 
-from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView
 
-from OnlineCookbook.accounts.forms import LoginForm, RegisterForm, ProfileForm
+from OnlineCookbook.accounts.forms import RegisterForm, ProfileForm
 from OnlineCookbook.accounts.models import Profile
 from OnlineCookbook.recipes.models import Recipe
 
@@ -29,36 +29,23 @@ class RegisterView(CreateView):
         return result
 
 
-def log_in(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('index')
-    else:
-        form = LoginForm()
+class UserLoginView(LoginView):
+    template_name = 'accounts/log-in.html'
 
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'accounts/log-in.html', context)
+    def get_success_url(self):
+        return reverse_lazy('index')
 
 
-@login_required()
-def log_out(request):
-    logout(request)
-    return redirect('index')
+class UserLogoutView(LogoutView):
+    template_name = 'index.html'
 
 
-class ProfileDetailsView(LoginRequiredMixin, FormView):
+class ProfileDetailsView(LoginRequiredMixin, DetailView):
+    model = Profile
     template_name = 'accounts/view-profile.html'
-    form_class = ProfileForm
-    success_url = reverse_lazy('view profile')
 
     def get_context_data(self, **kwargs):
-        profile = Profile.objects.get(pk=self.kwargs['pk'])
+        profile = Profile.objects.get(user_id=self.kwargs.get('pk'))
 
         profile_owner = self.request.user.id == profile.user_id
 
@@ -83,3 +70,27 @@ class ProfileEditView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('view profile', kwargs={'pk': self.kwargs['pk']})
+
+
+"""Workshop made CBV for Profile details using FormView"""
+# class ProfileDetailsView(LoginRequiredMixin, FormView):
+#     template_name = 'accounts/view-profile.html'
+#     form_class = ProfileForm
+#     success_url = reverse_lazy('view profile')
+#
+#     def get_context_data(self, **kwargs):
+#         profile = Profile.objects.get(pk=self.kwargs['pk'])
+#
+#         profile_owner = self.request.user.id == profile.user_id
+#
+#         recipes_added_by_user = Recipe.objects.filter(user_id=profile.user_id)
+#
+#         recipes_liked_by_user = Recipe.objects.filter(like__user=profile.user_id)
+#
+#         context = super().get_context_data(**kwargs)
+#
+#         context['profile'] = profile
+#         context['profile_owner'] = profile_owner
+#         context['recipes_added_by_user'] = recipes_added_by_user
+#         context['recipes_liked_by_user'] = recipes_liked_by_user
+#         return context
