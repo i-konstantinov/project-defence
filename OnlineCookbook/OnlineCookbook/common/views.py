@@ -1,5 +1,6 @@
 
 from django.shortcuts import render
+from django.views.generic import TemplateView
 
 from OnlineCookbook.common.forms import SearchForm
 from OnlineCookbook.recipes.models import Recipe
@@ -7,6 +8,10 @@ from OnlineCookbook.recipes.models import Recipe
 
 def index(request):
     return render(request, 'index.html')
+
+
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
 
 # Filter by type available only on index page
@@ -19,7 +24,7 @@ def recipe_type_filter(request, dish_type):
     return render(request, 'recipes/list-recipes.html', context)
 
 
-# Search by title
+# Search by title or ingredient
 def search_recipes(request):
     form = SearchForm()
     recipes_found = []

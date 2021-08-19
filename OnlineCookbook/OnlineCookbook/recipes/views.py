@@ -1,114 +1,125 @@
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from OnlineCookbook.common.models import Like
+from OnlineCookbook.common.models import Like, Comment
 from OnlineCookbook.common.forms import CommentForm
 
 from OnlineCookbook.recipes.forms import RecipeForm
 from OnlineCookbook.recipes.models import Recipe
 
 
-def list_all_recipes(request):
-    recipes = Recipe.objects.all()
-
-    context = {
-        'recipes': recipes,
-    }
-    return render(request, 'recipes/list-recipes.html', context)
+class ListRecipesView(ListView):
+    model = Recipe
+    template_name = 'recipes/list-recipes.html'
+    context_object_name = 'recipes'
 
 
-@login_required
-def add_recipe(request):
-    if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES)
-        if form.is_valid():
-            recipe = form.save(commit=False)
-            recipe.user = request.user
-            recipe.save()
-            return redirect('list all recipes')
-    else:
-        form = RecipeForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'recipes/add-recipe.html', context)
+class AddRecipeView(LoginRequiredMixin, CreateView):
+    model = Recipe
+    form_class = RecipeForm
+    template_name = 'recipes/add-recipe.html'
+
+    def form_valid(self, form):
+        recipe = form.save(commit=False)
+        recipe.user_id = self.request.user.id
+        recipe.save()
+        return redirect('list recipes')
 
 
-@login_required
-def comment_recipe(request, pk):
-    form = CommentForm(request.POST)
-    if form.is_valid():
-        comment = form.save(commit=False)
-        comment.user = request.user
-        comment.save()
-    return redirect('view recipe', pk)
+class RecipeDetailsView(DetailView):
+    model = Recipe
+    template_name = 'recipes/view-recipe.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-def view_recipe(request, pk):
-    recipe = Recipe.objects.get(pk=pk)
+        recipe = Recipe.objects.get(pk=self.kwargs.get('pk'))
 
-    recipe_owner = request.user == recipe.user
+        recipe_owner = self.request.user.id == recipe.user_id
 
-    liked_by_current_user = recipe.like_set.filter(user_id=request.user.id).first()
+        liked_by_current_user = recipe.like_set.filter(user_id=self.request.user.id).first()
 
-    total_number_of_likes = recipe.like_set.count()
+        total_number_of_likes = recipe.like_set.count()
 
-    comments = recipe.comment_set.all()
+        comments = recipe.comment_set.all()
 
-    recipe_ingredients = [f'- {i}\n' for i in recipe.ingredients.split()]
-
-    context = {
-        'recipe': recipe,
-        'recipe_owner': recipe_owner,
-        'recipe_ingredients': recipe_ingredients,
-        'comments': comments,
-        'comment_form': CommentForm(
-            initial={'recipe_pk': pk}
-        ),
-        'is_liked': liked_by_current_user is not None,
-        'likes_count': total_number_of_likes,
-    }
-    return render(request, 'recipes/view-recipe.html', context)
-
-
-@login_required
-def edit_recipe(request, pk):
-    recipe = Recipe.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES, instance=recipe)
-        if form.is_valid():
-            form.save()
-            return redirect('view recipe', pk)
-    else:
-        form = RecipeForm(instance=recipe)
-    context = {
-        'recipe': recipe,
-        'form': form,
-    }
-    return render(request, 'recipes/edit-recipe.html', context)
-
-
-@login_required
-def delete_recipe(request, pk):
-    recipe = Recipe.objects.get(pk=pk)
-    recipe.delete()
-    return redirect('index')
-
-
-@login_required
-def like_recipe(request, pk):
-    recipe = Recipe.objects.get(pk=pk)
-    user = request.user
-
-    liked_by_current_user = recipe.like_set.filter(user_id=user.id).first()
-    if not liked_by_current_user:
-        like = Like(
-            recipe=recipe,
-            user=user,
+        context['recipe'] = recipe
+        context['recipe_owner'] = recipe_owner
+        context['liked_by_current_user'] = liked_by_current_user
+        context['total_number_of_likes'] = total_number_of_likes
+        context['comments'] = comments
+        context['comment_form'] = CommentForm(
+            initial={'recipe_pk': self.kwargs.get('pk')}
         )
-        like.save()
-    else:
-        liked_by_current_user.delete()
-    return redirect('view recipe', pk)
+        return context
+
+
+"""Не използвам CreateView или FormView за Comment, защото изискват GET
+и трябва да им се подаде темплейт"""
+
+
+class CommentRecipeView(LoginRequiredMixin, View):
+    form_class = CommentForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid() and not form.cleaned_data['text'] == '':
+            recipe = Recipe.objects.get(pk=self.kwargs.get('pk'))
+            comment = Comment(
+                text=form.cleaned_data['text'],
+                recipe=recipe,
+                user=self.request.user,
+            )
+            comment.save()
+            return redirect('view recipe', recipe.pk)
+
+        else:
+            return redirect('view recipe', self.kwargs.get('pk'))
+
+
+class LikeRecipeView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        recipe = Recipe.objects.get(pk=self.kwargs.get('pk'))
+        user = self.request.user
+
+        liked_by_current_user = recipe.like_set.filter(user_id=self.request.user.id).first()
+
+        if not liked_by_current_user:
+            like = Like(
+                recipe=recipe,
+                user=user,
+            )
+            like.save()
+        else:
+            liked_by_current_user.delete()
+
+        return redirect('view recipe', recipe.pk)
+
+
+class EditRecipeView(LoginRequiredMixin, UpdateView):
+    model = Recipe
+    form_class = RecipeForm
+    template_name = 'recipes/edit-recipe.html'
+
+    def get_success_url(self):
+        return reverse_lazy('view recipe', kwargs={'pk': self.kwargs['pk']})
+
+
+"""Нямам темплейт за показване DeleteRecipeView при GET рикуест, затова пренаписвам метода"""
+
+
+class DeleteRecipeView(LoginRequiredMixin, DeleteView):
+    model = Recipe
+    success_url = reverse_lazy('list recipes')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)

@@ -25,7 +25,7 @@
                                 <h4>{{ recipe.title }}</h4>
                                 <h6>Type: {{ recipe.type }}</h6>
                                 <h6>Added by: {{ recipe.user.email }}</h6>
-                                <h6>Liked by {{ likes_count }} people</h6>
+                                <h6>Liked by {{ total_number_of_likes }} people</h6>
                             </div>
                         </div>
                     </div>
@@ -34,9 +34,9 @@
                     <!-- Options available only for recipe owner -->
                     {% if recipe_owner %}
                         <p>
-                            <a href="{% url 'edit recipe' recipe.id %}"
+                            <a href="{% url 'edit recipe' recipe.pk %}"
                                class="btn btn-outline-dark btn-sm btn-block">Edit recipe</a>
-                            <a href="{% url 'delete recipe' recipe.id %}"
+                            <a href="{% url 'delete recipe' recipe.pk %}"
                                class="btn btn-outline-danger btn-sm btn-block"
                             >Delete recipe</a>
                         </p>
@@ -67,16 +67,16 @@
                         <hr>
 
 
-                        <!-- Only not-owners can like -->
+                        <!-- Owner cannot like/Unlike -->
                         {% if not recipe_owner %}
-                            {% if is_liked %}
+                            {% if liked_by_current_user %}
                                 <b>Unlike</b>
-                                <a href="{% url 'like recipe' recipe.id %}">
+                                <a href="{% url 'like recipe' recipe.pk %}">
                                     <span style='font-size:50px;'>&#128078;</span>
                                 </a>
                             {% else %}
                                 <b>Like this recipe</b>
-                                <a href="{% url 'like recipe' recipe.id %}">
+                                <a href="{% url 'like recipe' recipe.pk %}">
                                     <span style='font-size:50px;'>&#128077;</span>
                                 </a>
                             {% endif %}
@@ -95,7 +95,7 @@
                         {% endfor %}
 
                         <div class="box">
-                            <form method="post" action="{% url 'comment recipe' recipe.id %}">
+                            <form method="post" action="{% url 'comment recipe' recipe.pk %}">
                                 {% csrf_token %}
                                 {{ comment_form }}
                                 <button class="btn btn-primary mt-2" type="submit">Add comment</button>
