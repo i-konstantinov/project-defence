@@ -8,7 +8,7 @@
             <!-- Recipe widget -->
             <div class="bg-white shadow rounded overflow-hidden">
                 <div class="px-4 pt-4 pb-4 cover">
-                    {#                    <div class="media align-items-end profile-head">#}
+
                     <div class="profile mr-3">
                         <div class="card-img-top">
                             {% if recipe.image %}
@@ -58,9 +58,7 @@
                             <div class="box">
                                 <p>
                                 <h3><b>Ingredients:</b></h3>
-                                {% for i in recipe_ingredients %}
-                                    <h5>{{ i }}</h5>
-                                {% endfor %}
+                                <h5>{{ recipe.ingredients }}</h5>
                                 <p>
                                 <h3><b>Instructions:</b></h3>
                                 <h5>{{ recipe.instructions }}</h5>

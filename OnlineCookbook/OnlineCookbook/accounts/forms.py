@@ -38,5 +38,4 @@ class RegisterForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        # fields = ('profile_image',)
         exclude = ('user',)

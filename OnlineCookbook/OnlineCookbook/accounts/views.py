@@ -1,3 +1,4 @@
+
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,15 +6,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, ListView, UpdateView
-from django.views.generic.base import ContextMixin
-from django.views.generic.detail import SingleObjectMixin
 
 from OnlineCookbook.accounts.forms import LoginForm, RegisterForm, ProfileForm
 from OnlineCookbook.accounts.models import Profile
-from OnlineCookbook.common.models import Like
 from OnlineCookbook.recipes.models import Recipe
-
-UserModel = get_user_model()
 
 
 class ListProfilesView(ListView):
@@ -63,9 +59,13 @@ class ProfileDetailsView(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         profile = Profile.objects.get(pk=self.kwargs['pk'])
+
         profile_owner = self.request.user.id == profile.user_id
+
         recipes_added_by_user = Recipe.objects.filter(user_id=profile.user_id)
-        recipes_liked_by_user = [obj.recipe for obj in Like.objects.filter(user_id=profile.user_id)]
+
+        recipes_liked_by_user = Recipe.objects.filter(like__user=profile.user_id)
+
         context = super().get_context_data(**kwargs)
 
         context['profile'] = profile
@@ -74,33 +74,12 @@ class ProfileDetailsView(LoginRequiredMixin, FormView):
         context['recipes_liked_by_user'] = recipes_liked_by_user
         return context
 
-#
-# @login_required
-# def edit_profile(request, pk):
-#     profile = Profile.objects.get(pk=pk)
-#
-#     if request.method == 'POST':
-#         form = ProfileForm(
-#             request.POST,
-#             request.FILES,
-#             instance=profile,
-#         )
-#         if form.is_valid():
-#             form.save()
-#             return redirect('view profile', pk)
-#     else:
-#         form = ProfileForm(instance=profile)
-#
-#     context = {
-#         'form': form,
-#         'profile': profile,
-#
-#     }
-#     return render(request, 'accounts/edit-profile.html', context)
-
 
 class ProfileEditView(UpdateView):
     model = Profile
+
     form_class = ProfileForm
     template_name = 'accounts/edit-profile.html'
-    success_url = reverse_lazy('list profiles')
+
+    def get_success_url(self):
+        return reverse_lazy('view profile', kwargs={'pk': self.kwargs['pk']})
