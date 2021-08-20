@@ -1,4 +1,3 @@
-
 from django.contrib.auth import login
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -71,26 +70,3 @@ class ProfileEditView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('view profile', kwargs={'pk': self.kwargs['pk']})
 
-
-"""Workshop made CBV for Profile details using FormView"""
-# class ProfileDetailsView(LoginRequiredMixin, FormView):
-#     template_name = 'accounts/view-profile.html'
-#     form_class = ProfileForm
-#     success_url = reverse_lazy('view profile')
-#
-#     def get_context_data(self, **kwargs):
-#         profile = Profile.objects.get(pk=self.kwargs['pk'])
-#
-#         profile_owner = self.request.user.id == profile.user_id
-#
-#         recipes_added_by_user = Recipe.objects.filter(user_id=profile.user_id)
-#
-#         recipes_liked_by_user = Recipe.objects.filter(like__user=profile.user_id)
-#
-#         context = super().get_context_data(**kwargs)
-#
-#         context['profile'] = profile
-#         context['profile_owner'] = profile_owner
-#         context['recipes_added_by_user'] = recipes_added_by_user
-#         context['recipes_liked_by_user'] = recipes_liked_by_user
-#         return context

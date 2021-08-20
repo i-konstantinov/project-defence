@@ -1,48 +1,25 @@
 
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
+from django.db.models import Q
 
-from OnlineCookbook.common.forms import SearchForm
 from OnlineCookbook.recipes.models import Recipe
-
-
-def index(request):
-    return render(request, 'index.html')
 
 
 class IndexView(TemplateView):
     template_name = 'index.html'
 
 
-# Filter by type available only on index page
-def recipe_type_filter(request, dish_type):
-    recipes = Recipe.objects.filter(type=dish_type)
+# Search by keyword
+class SearchRecipeView(ListView):
+    model = Recipe
+    template_name = 'recipes/list-recipes.html'
+    context_object_name = 'recipes'
 
-    context = {
-        'recipes': recipes,
-    }
-    return render(request, 'recipes/list-recipes.html', context)
-
-
-# Search by title or ingredient
-def search_recipes(request):
-    form = SearchForm()
-    recipes_found = []
-    total_recipes_count = Recipe.objects.count()
-
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            keywords = form.cleaned_data['text'].split(' ')
-
-            for recipe in Recipe.objects.all():
-                for keyword in keywords:
-                    if recipe.title.lower().__contains__(keyword.lower()) \
-                            or recipe.ingredients.lower().__contains__(keyword.lower()):
-                        recipes_found.append(recipe)
-    context = {
-        'recipes': recipes_found,
-        'form': form,
-        'total_recipes_count': total_recipes_count,
-    }
-    return render(request, 'recipes/list-recipes.html', context)
+    def get_queryset(self):
+        search_query = self.request.GET.get('search_field')
+        object_list = Recipe.objects.filter(
+                    Q(title__icontains=search_query) |
+                    Q(ingredients__icontains=search_query) |
+                    Q(type__contains=search_query)
+                )
+        return object_list

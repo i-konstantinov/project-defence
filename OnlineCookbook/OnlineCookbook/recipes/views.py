@@ -31,7 +31,7 @@ class AddRecipeView(LoginRequiredMixin, CreateView):
         return redirect('list recipes')
 
 
-class RecipeDetailsView(DetailView):
+class RecipeDetailsView(LoginRequiredMixin, DetailView):
     model = Recipe
     template_name = 'recipes/view-recipe.html'
 
@@ -105,7 +105,7 @@ class LikeRecipeView(LoginRequiredMixin, View):
         return redirect('view recipe', recipe.pk)
 
 
-class EditRecipeView(LoginRequiredMixin, UpdateView):
+class EditRecipeView(UpdateView):
     model = Recipe
     form_class = RecipeForm
     template_name = 'recipes/edit-recipe.html'
@@ -114,7 +114,7 @@ class EditRecipeView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('view recipe', kwargs={'pk': self.kwargs['pk']})
 
 
-"""Нямам темплейт за показване DeleteRecipeView при GET рикуест, затова пренаписвам метода"""
+"""Няма темплейт за показване на DeleteRecipeView при GET рикуест, затова пренаписвам метода"""
 
 
 class DeleteRecipeView(LoginRequiredMixin, DeleteView):

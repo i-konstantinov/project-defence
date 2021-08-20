@@ -11,6 +11,7 @@
                 <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                 <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
+
             <div class="carousel-inner">
 
                 <div class="carousel-item active">
@@ -18,49 +19,64 @@
                          aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <rect width="100%" height="100%" fill="#777"/>
                     </svg>
-
                     <div class="container">
                         <div class="carousel-caption text-start">
                             <img src="{% static 'images/steak.jpg' %}" alt="">
                             <h1>Meat recipes</h1>
                             <p>How about a nice steak?</p>
-                            <p><a class="btn btn-lg btn-primary" href="{% url 'recipe type filter' 'meat dish' %}">Browse</a></p>
+                            <form method="get" action="{% url 'search recipes' %}">
+                                {% csrf_token %}
+                                <input name="search_field" type="hidden" value="meat dish">
+                                <button class="btn btn-lg btn-primary">Browse</button>
+                            </form>
+
                         </div>
                     </div>
                 </div>
+
 
                 <div class="carousel-item">
                     <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"
                          aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <rect width="100%" height="100%" fill="#777"/>
                     </svg>
-
                     <div class="container">
                         <div class="carousel-caption">
                             <img src="{% static 'images/macandcheese.jpg' %}" alt="">
                             <h1>Vegetarian recipes</h1>
                             <p>Mac and cheese anyone?</p>
-                            <p><a class="btn btn-lg btn-primary" href="{% url 'recipe type filter' 'vegetarian dish' %}">Browse</a></p>
+                            <form method="get" action="{% url 'search recipes' %}">
+                                {% csrf_token %}
+                                <input name="search_field" type="hidden" value="vegetarian dish">
+                                <button class="btn btn-lg btn-primary">Browse</button>
+                            </form>
+
                         </div>
                     </div>
                 </div>
+
 
                 <div class="carousel-item">
                     <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"
                          aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
                         <rect width="100%" height="100%" fill="#777"/>
                     </svg>
-
                     <div class="container">
                         <div class="carousel-caption text-end">
                             <img src="{% static 'images/vegan.jpg' %}" alt="">
                             <h1>Vegan recipes</h1>
                             <p>Plant-based only!</p>
-                            <p><a class="btn btn-lg btn-primary" href="{% url 'recipe type filter' 'vegan dish' %}">Browse</a></p>
+                            <form method="get" action="{% url 'search recipes' %}">
+                                {% csrf_token %}
+                                <input name="search_field" type="hidden" value="vegan dish">
+                                <button class="btn btn-lg btn-primary">Browse</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>

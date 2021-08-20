@@ -6,22 +6,9 @@
         <div class="album py-5 bg-light">
             <div class="container">
 
-                <!-- If search recipes is called -->
-                {% if form %}
-                    <p>Currently we have {{ total_recipes_count }} recipes in our database!</p>
-                    <p>Type in a recipe title or an ingredient to search for: </p>
-                    <form class="d-flex" method="post" action="{% url 'search recipes' %}">
-                        {% csrf_token %}
-                        {{ form.text }}
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                    <hr>
-                {% endif %}
-
-
-                {% if recipes %}
+                {% if object_list %}
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                        {% for recipe in recipes %}
+                        {% for recipe in object_list %}
                             <div class="col">
                                 <div class="card shadow-sm">
                                     <a href="{% url 'view recipe' recipe.id %}">

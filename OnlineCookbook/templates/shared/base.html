@@ -56,11 +56,15 @@
                         </li>
                     {% endif %}
                 </ul>
-                <li>
-                    <a href="{% url 'search recipes' %}">
-                        <button class="btn btn-outline-success">Search recipes</button>
-                    </a>
-                </li>
+
+                <!-- Search form -->
+                <form action="{% url 'search recipes' %}" method="get">
+                    {% csrf_token %}
+                    <label>
+                        <input name="search_field" type="search" placeholder="Type in a keyword...">
+                    </label>
+                    <button class="btn btn-outline-success">Search recipes</button>
+                </form>
             </div>
         </div>
     </nav>
