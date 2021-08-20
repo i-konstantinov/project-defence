@@ -41,9 +41,11 @@ class UserLogoutView(LogoutView):
 
 class ProfileDetailsView(LoginRequiredMixin, DetailView):
     model = Profile
-    template_name = 'accounts/view-profile.html'
+    template_name = 'accounts/profile-details.html'
 
     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
         profile = Profile.objects.get(user_id=self.kwargs.get('pk'))
 
         profile_owner = self.request.user.id == profile.user_id
@@ -51,8 +53,6 @@ class ProfileDetailsView(LoginRequiredMixin, DetailView):
         recipes_added_by_user = Recipe.objects.filter(user_id=profile.user_id)
 
         recipes_liked_by_user = Recipe.objects.filter(like__user=profile.user_id)
-
-        context = super().get_context_data(**kwargs)
 
         context['profile'] = profile
         context['profile_owner'] = profile_owner
@@ -68,5 +68,5 @@ class ProfileEditView(UpdateView):
     template_name = 'accounts/edit-profile.html'
 
     def get_success_url(self):
-        return reverse_lazy('view profile', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('profile details', kwargs={'pk': self.kwargs['pk']})
 

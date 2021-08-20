@@ -6,12 +6,12 @@
         <div class="album py-5 bg-light">
             <div class="container">
 
-                {% if object_list %}
+                {% if recipes %}
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                        {% for recipe in object_list %}
+                        {% for recipe in recipes %}
                             <div class="col">
                                 <div class="card shadow-sm">
-                                    <a href="{% url 'view recipe' recipe.id %}">
+                                    <a href="{% url 'recipe details' recipe.id %}">
                                         {% if recipe.image %}
                                             <img
                                                     src="{{ recipe.image.url }}"
@@ -37,7 +37,7 @@
                                                 class="card-text"
                                                 size="1"
                                         >Added by: {{ recipe.user }}</p>
-                                        <a href="{% url 'view recipe' recipe.id %}">
+                                        <a href="{% url 'recipe details' recipe.id %}">
                                             <button
                                                     type="button"
                                                     class="btn btn-sm btn-outline-primary"
@@ -45,7 +45,7 @@
                                             </button>
                                         </a>
 
-                                        <a href="{% url 'view profile' recipe.user.id %}">
+                                        <a href="{% url 'profile details' recipe.user.id %}">
                                             <button
                                                     type="button"
                                                     class="btn btn-sm btn-outline-secondary"

@@ -16,7 +16,7 @@
                                 <div class="card shadow-sm">
 
 
-                                    <a href="{% url 'view profile' profile.pk %}">
+                                    <a href="{% url 'profile details' profile.pk %}">
                                         {% if profile.profile_image %}
                                             <img
                                                     src="{{ profile.profile_image.url }}"
@@ -47,7 +47,7 @@
                                         <p class="card-text" size="1">From: {{ profile.hometown }}<br>
                                             Total recipes: {{ profile.user.recipe_set.count }}
                                         </p>
-                                        <a href="{% url 'view profile' profile.user.id %}">
+                                        <a href="{% url 'profile details' profile.user.id %}">
                                             <button
                                                     type="button"
                                                     class="btn btn-sm btn-outline-secondary"

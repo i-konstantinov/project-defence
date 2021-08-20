@@ -28,12 +28,12 @@ class AddRecipeView(LoginRequiredMixin, CreateView):
         recipe = form.save(commit=False)
         recipe.user_id = self.request.user.id
         recipe.save()
-        return redirect('list recipes')
+        return redirect('recipe details')
 
 
 class RecipeDetailsView(LoginRequiredMixin, DetailView):
     model = Recipe
-    template_name = 'recipes/view-recipe.html'
+    template_name = 'recipes/recipe-details.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,9 +53,7 @@ class RecipeDetailsView(LoginRequiredMixin, DetailView):
         context['liked_by_current_user'] = liked_by_current_user
         context['total_number_of_likes'] = total_number_of_likes
         context['comments'] = comments
-        context['comment_form'] = CommentForm(
-            initial={'recipe_pk': self.kwargs.get('pk')}
-        )
+        context['comment_form'] = CommentForm()
         return context
 
 
@@ -77,10 +75,10 @@ class CommentRecipeView(LoginRequiredMixin, View):
                 user=self.request.user,
             )
             comment.save()
-            return redirect('view recipe', recipe.pk)
+            return redirect('recipe details', recipe.pk)
 
         else:
-            return redirect('view recipe', self.kwargs.get('pk'))
+            return redirect('recipe details', self.kwargs.get('pk'))
 
 
 class LikeRecipeView(LoginRequiredMixin, View):
@@ -102,7 +100,7 @@ class LikeRecipeView(LoginRequiredMixin, View):
         else:
             liked_by_current_user.delete()
 
-        return redirect('view recipe', recipe.pk)
+        return redirect('recipe details', recipe.pk)
 
 
 class EditRecipeView(UpdateView):
@@ -111,7 +109,7 @@ class EditRecipeView(UpdateView):
     template_name = 'recipes/edit-recipe.html'
 
     def get_success_url(self):
-        return reverse_lazy('view recipe', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('recipe details', kwargs={'pk': self.kwargs['pk']})
 
 
 """Няма темплейт за показване на DeleteRecipeView при GET рикуест, затова пренаписвам метода"""

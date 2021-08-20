@@ -25,9 +25,11 @@
 <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
-
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+
+                    <!-- Buttons visible for all users -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'index' %}">Home</a>
                     </li>
@@ -40,9 +42,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'list profiles' %}">View all profiles</a>
                     </li>
+
+
+                    <!-- Check is user is authenticated and show options -->
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'view profile' user.id %}">My profile</a>
+                            <a class="nav-link" href="{% url 'profile details' user.id %}">My profile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'log out' %}"><b>Log out</b></a>
@@ -57,6 +62,7 @@
                     {% endif %}
                 </ul>
 
+
                 <!-- Search form -->
                 <form action="{% url 'search recipes' %}" method="get">
                     {% csrf_token %}
@@ -65,6 +71,7 @@
                     </label>
                     <button class="btn btn-outline-success">Search recipes</button>
                 </form>
+
             </div>
         </div>
     </nav>
