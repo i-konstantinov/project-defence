@@ -69,4 +69,3 @@ class ProfileEditView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('profile details', kwargs={'pk': self.kwargs['pk']})
-

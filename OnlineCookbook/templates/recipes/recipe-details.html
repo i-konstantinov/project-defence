@@ -51,6 +51,7 @@
                     </p>
                 </div>
 
+
                 <!-- Recipe Info -->
                 <div class="bg-light p-4 d-flex justify-content-end text-center">
                     <ul class="list-inline mb-0">
@@ -58,10 +59,14 @@
                             <div class="box">
                                 <p>
                                 <h3><b>Ingredients:</b></h3>
-                                <h5>{{ recipe.ingredients }}</h5>
+                                {% for ingredient in ingredients_formatted %}
+                                    <h5>{{ ingredient }}</h5>
+                                {% endfor %}
                                 <p>
                                 <h3><b>Instructions:</b></h3>
-                                <h5>{{ recipe.instructions }}</h5>
+                                <article><h5>{{ recipe.instructions }}</h5></article>
+                                <p>
+
                             </div>
                         </li>
                         <hr>

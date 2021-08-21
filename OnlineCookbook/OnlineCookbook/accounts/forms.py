@@ -20,6 +20,8 @@ class ProfileForm(forms.ModelForm):
 
 
 """Custom Login Form used with FBV"""
+#
+#
 # class LoginForm(forms.Form):
 #     user = None
 #

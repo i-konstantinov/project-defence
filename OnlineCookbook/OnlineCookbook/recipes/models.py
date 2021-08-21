@@ -20,15 +20,15 @@ class Recipe(models.Model):
         choices=TYPE_CHOICES,
     )
     title = models.CharField(
-        max_length=20,
+        max_length=50,
         blank=True,
     )
     ingredients = models.TextField(
-        max_length=500,
+        max_length=10000,
         blank=True,
     )
     instructions = models.TextField(
-        max_length=1000,
+        max_length=10000,
         blank=True,
     )
     image = models.ImageField(

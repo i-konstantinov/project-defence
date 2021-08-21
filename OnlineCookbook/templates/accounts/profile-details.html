@@ -43,7 +43,7 @@
                                 {% for recipe in recipes_added_by_user %}
                                     <div class="col-lg-6 flex-column">
 
-                                        <a href="{% url 'view recipe' recipe.id %}">
+                                        <a href="{% url 'recipe details' recipe.id %}">
                                             {% if recipe.image %}
                                                 <img
                                                         src="{{ recipe.image.url }}"
@@ -79,7 +79,7 @@
                             {% for recipe in recipes_liked_by_user %}
                                 <div class="col-lg-6 flex-column">
 
-                                    <a href="{% url 'view recipe' recipe.id %}">
+                                    <a href="{% url 'recipe details' recipe.id %}">
                                         {% if recipe.image %}
                                             <img
                                                     src="{{ recipe.image.url }}"

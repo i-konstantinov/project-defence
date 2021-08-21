@@ -47,7 +47,7 @@
                                         <p class="card-text" size="1">From: {{ profile.hometown }}<br>
                                             Total recipes: {{ profile.user.recipe_set.count }}
                                         </p>
-                                        <a href="{% url 'profile details' profile.user.id %}">
+                                        <a href="{% url 'profile details' profile.pk %}">
                                             <button
                                                     type="button"
                                                     class="btn btn-sm btn-outline-secondary"

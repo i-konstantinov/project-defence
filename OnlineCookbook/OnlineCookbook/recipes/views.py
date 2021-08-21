@@ -28,10 +28,10 @@ class AddRecipeView(LoginRequiredMixin, CreateView):
         recipe = form.save(commit=False)
         recipe.user_id = self.request.user.id
         recipe.save()
-        return redirect('recipe details')
+        return redirect('recipe details', recipe.pk)
 
 
-class RecipeDetailsView(LoginRequiredMixin, DetailView):
+class RecipeDetailsView(DetailView):
     model = Recipe
     template_name = 'recipes/recipe-details.html'
 
@@ -46,9 +46,12 @@ class RecipeDetailsView(LoginRequiredMixin, DetailView):
 
         total_number_of_likes = recipe.like_set.count()
 
+        ingredients_formatted = recipe.ingredients.split('; ')
+
         comments = recipe.comment_set.all()
 
         context['recipe'] = recipe
+        context['ingredients_formatted'] = ingredients_formatted
         context['recipe_owner'] = recipe_owner
         context['liked_by_current_user'] = liked_by_current_user
         context['total_number_of_likes'] = total_number_of_likes

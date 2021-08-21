@@ -13,7 +13,12 @@
             {% csrf_token %}
             {% for field in form %}
                 <p>
-                <h5>{{ field.name }}</h5>
+                <h5>{{ field.name.capitalize }}</h5>
+                {% if field.name == 'ingredients'%}
+                    <h6>
+                        Please type in ingredients divided by "; "
+                    </h6>
+                {% endif %}
                 <a>{{ field }}</a>
             {% endfor %}
             <br>

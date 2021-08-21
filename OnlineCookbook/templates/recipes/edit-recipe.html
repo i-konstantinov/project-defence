@@ -11,12 +11,9 @@
                 action="{% url 'edit recipe' recipe.id %}"
                 enctype="multipart/form-data">
             {% csrf_token %}
-            {% for field in form %}
-                <p>
-                <h5>{{ field.name }}</h5>
-                <a>{{ field }}</a>
-            {% endfor %}
-            <br>
+            <table align="center">
+                {{ form.as_table }}
+            </table>
             <br>
             <button class="button btn-primary" type="submit">Update</button>
             <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
